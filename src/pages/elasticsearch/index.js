@@ -46,6 +46,43 @@ const connector = new ElasticSearchAPIConnector({
     }
 });
 
+connector.onAutocomplete = async (
+  state,
+  queryConfig
+) => {
+  const response = await fetch(
+    "https://autocomplete.bdrc.io/autosuggest", { method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ query: state.searchTerm })
+    }
+  )
+
+  // response will need to be in the shape of AutocompleteResponseState.
+  // Alternatively you could transform the response here
+  let json = await response.json()
+  console.log(json)
+  return ({     
+    suggest: {
+      suggest:[{
+        text:state.searchTerm,
+        offset:0,
+        length:state.searchTerm.length,
+        options: json.map((s,i) => ({           
+          text: s.res+" / "+s.category,          
+          _index: "bdrc_prod",
+          // data that seem to be neeeded for the json to be processed 
+          _id:"bdr:MW123456_"+i,
+          _score:1,
+          _source: {
+            prefLabel_bo_x_ewts: s.res,
+            search_as_you_type: s.res,
+            search_completion: [ s.res ],
+          }
+        }))
+      }] 
+    },
+  });
+}
 
 /*
 */
@@ -78,15 +115,30 @@ const config = {
       "translator.prefLabel_en": {},
       "workGenre.prefLabel_bo_x_ewts": {},
       "workGenre.prefLabel_en": {},
-      "workIsAbout.prefLabel_bo_x_ewts": {},
-      "workIsAbout.prefLabel_en": {}
+      "workIsAbout": {}
     },
     result_fields: {
-      //description: {
-      prefLabel_bo_x_ewts: {
-      },
-      prefLabel_en: {
-      }
+      "seriesName_bo_x_ewts":{},
+      "seriesName_en":{},
+      "authorshipStatement_bo_x_ewts":{},
+      "authorshipStatement_en":{},
+      "publisherName_bo_x_ewts":{},
+      "publisherLocation_bo_x_ewts":{},
+      "publisherName_en":{},
+      "publisherLocation_en":{},
+      "prefLabel_bo_x_ewts":{},
+      "prefLabel_en":{},
+      "comment_bo_x_ewts":{},
+      "comment_en":{},
+      "altLabel_bo_x_ewts":{},
+      "altLabel_en":{},
+      "author.prefLabel_bo_x_ewts":{},
+      "author.prefLabel_en":{},
+      "translator.prefLabel_bo_x_ewts":{},
+      "translator.prefLabel_en":{},
+      "workGenre.prefLabel_bo_x_ewts":{},
+      "workGenre.prefLabel_en":{},
+      "workIsAbout":{}
     },
     disjunctiveFacets: [
       /*
@@ -154,37 +206,22 @@ const config = {
     }
   },
   autocompleteQuery: {    
-    results: {      
+    results: {    
       search_fields: {
-        "prefLabel_bo_x_ewts": {},
-        "prefLabel_en": {},
-        "altLabel_bo_x_ewts": {},
-        "altLabel_en": {},
-        "seriesName_bo_x_ewts": {},
-        "seriesName_en": {},
-      },
-      resultsPerPage: 5,
+        search_as_you_type: {}
+      },      
       result_fields: {
-        /*
-        title: {
-          snippet: {
-            size: 100,
-            fallback: true
-          }
-        },
-        nps_link: {
+        prefLabel_bo_x_ewts: {
           raw: {}
-        }
-        */
-      }
+        },
+      }  
     },
     suggestions: {
       types: {
         documents: {
-          fields: [ "seriesName_bo_x_ewts", "seriesName_en", "prefLabel_bo_x_ewts", "prefLabel_en", "altLabel_bo_x_ewts", "altLabel_en" ]
+          fields: ["search_completion"]
         }
       },
-      size: 4
     }
   }
 };
@@ -208,13 +245,12 @@ export default function App() {
                       autocompleteResults={{
                         linkTarget: "_blank",
                         sectionTitle: "Results",
-                        titleField: "title",
-                        urlField: "nps_link",
+                        titleField: "prefLabel_bo_x_ewts",
                         shouldTrackClickThrough: true,
                         clickThroughTags: ["test"]
                       }}
                       autocompleteSuggestions={true}
-                      debounceLength={0}
+                      debounceLength={300}
                     />
                   }
                   sideContent={
