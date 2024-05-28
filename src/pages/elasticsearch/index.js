@@ -166,61 +166,6 @@ const config = {
   }
 };
 
-const SORT_OPTIONS = [
-  {
-    name: "Relevance",
-    value: []
-  },
-  {
-    name: "Title",
-    value: [
-      {
-        field: "title.keyword",
-        direction: "asc"
-      }
-    ]
-  },
-  {
-    name: "State",
-    value: [
-      {
-        field: "states.keyword",
-        direction: "asc"
-      }
-    ]
-  },
-  {
-    name: "State -> Title",
-    value: [
-      {
-        field: "states.keyword",
-        direction: "asc"
-      },
-      {
-        field: "title.keyword",
-        direction: "asc"
-      }
-    ]
-  },
-  {
-    name: "Heritage Site -> State -> Title",
-    value: [
-      {
-        field: "world_heritage_site.keyword",
-        direction: "asc"
-      },
-      {
-        field: "states.keyword",
-        direction: "asc"
-      },
-      {
-        field: "title.keyword",
-        direction: "asc"
-      }
-    ]
-  }
-];
-
 export default function App() {
   return (
     <SearchProvider config={config}>
@@ -251,9 +196,6 @@ export default function App() {
                   }
                   sideContent={
                     <div>
-                      {wasSearched && (
-                        <Sorting label={"Sort by"} sortOptions={SORT_OPTIONS} />
-                      )}
                       <Facet
                         field="states.keyword"
                         label="States"
