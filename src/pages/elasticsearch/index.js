@@ -24,7 +24,7 @@ import {
 } from "@elastic/react-search-ui-views";
 import "@elastic/react-search-ui-views/lib/styles/styles.css";
 
-import { connectionOptions } from "../../config"
+import { connectionOptions } from "../../config-auth"
 
 const connector = new ElasticSearchAPIConnector({
   host:
