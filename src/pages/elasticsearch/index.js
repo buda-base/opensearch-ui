@@ -156,9 +156,12 @@ const config = {
   autocompleteQuery: {    
     results: {      
       search_fields: {
-        /*
-        parks_search_as_you_type: {}
-        */
+        "prefLabel_bo_x_ewts": {},
+        "prefLabel_en": {},
+        "altLabel_bo_x_ewts": {},
+        "altLabel_en": {},
+        "seriesName_bo_x_ewts": {},
+        "seriesName_en": {},
       },
       resultsPerPage: 5,
       result_fields: {
@@ -178,9 +181,7 @@ const config = {
     suggestions: {
       types: {
         documents: {
-          fields: [ 
-            /*"parks_completion"*/
-          ]
+          fields: [ "seriesName_bo_x_ewts", "seriesName_en", "prefLabel_bo_x_ewts", "prefLabel_en", "altLabel_bo_x_ewts", "altLabel_en" ]
         }
       },
       size: 4
