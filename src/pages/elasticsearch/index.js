@@ -58,6 +58,28 @@ const config = {
   searchQuery: {
     filters: [],
     search_fields: {
+      "seriesName_bo_x_ewts": {},
+      "seriesName_en": {},
+      "authorshipStatement_bo_x_ewts": {},
+      "authorshipStatement_en": {},
+      "publisherName_bo_x_ewts": {},
+      "publisherLocation_bo_x_ewts": {},
+      "publisherName_en": {},
+      "publisherLocation_en": {},
+      "prefLabel_bo_x_ewts": {},
+      "prefLabel_en": {},
+      "comment_bo_x_ewts": {},
+      "comment_en": {},
+      "altLabel_bo_x_ewts": {},
+      "altLabel_en": {},
+      "author.prefLabel_bo_x_ewts": {},
+      "author.prefLabel_en": {},
+      "translator.prefLabel_bo_x_ewts": {},
+      "translator.prefLabel_en": {},
+      "workGenre.prefLabel_bo_x_ewts": {},
+      "workGenre.prefLabel_en": {},
+      "workIsAbout.prefLabel_bo_x_ewts": {},
+      "workIsAbout.prefLabel_en": {}
     },
     result_fields: {
       //description: {
