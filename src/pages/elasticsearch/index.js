@@ -24,8 +24,6 @@ import {
 } from "@elastic/react-search-ui-views";
 import "@elastic/react-search-ui-views/lib/styles/styles.css";
 
-import { connectionOptions } from "../../config-auth"
-
 const connector = new ElasticSearchAPIConnector({
   host:
     process.env.REACT_ELASTICSEARCH_HOST ||
@@ -41,7 +39,11 @@ const connector = new ElasticSearchAPIConnector({
     "SlUzdWE0QUJmN3VmYVF2Q0F6c0I6TklyWHFIZ3lTbHF6Yzc2eEtyeWFNdw==",
     */
 
-  connectionOptions
+  connectionOptions: {
+      headers: {
+        "Authorization": "Basic cHVibGljcXVlcnk6MFZzZzFRdmpMa1RDenZ0bA=="
+      }
+    }
 });
 
 
