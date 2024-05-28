@@ -66,7 +66,7 @@ connector.onAutocomplete = async (
     autocompletedResults: [],
     autocompletedSuggestions: {
       documents: json.map((s,i) => ({ 
-        highlight: s.res,
+        highlight: s.res+" <not_suggested><i>/</i> "+s.category+"</not_suggested",
         suggestion: s.res.replace(/<\/?suggested>/g,""),
       }))
     }

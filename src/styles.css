@@ -2,7 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+.sui-search-box__suggestion-list {
+  width:800px;
+  max-width:100%;
+}
 
+.sui-search-box__autocomplete-container li[aria-selected=true] {
+  background:#d73449;
+}
+
+not_suggested, 
 suggested {
   font-weight:bold;
+}
+
+not_suggested {
+  opacity:0.65;
+}
+
+not_suggested i {
+  font-weight:normal;
 }
