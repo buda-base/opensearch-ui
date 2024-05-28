@@ -57,32 +57,51 @@ connector.onAutocomplete = async (
     }
   )
 
-  // response will need to be in the shape of AutocompleteResponseState.
+  // response will need to be in the shape of AutocompleteResponseState 
+  // ==> https://github.com/elastic/search-ui/blob/16c82f84c699ad7134bc11a7dad53294358bb198/packages/search-ui/src/types/index.ts#L70 
   // Alternatively you could transform the response here
   let json = await response.json()
   console.log(json)
   return ({     
-    suggest: {
-      suggest:[{
-        text:state.searchTerm,
-        offset:0,
-        length:state.searchTerm.length,
-        options: json.map((s,i) => ({           
-          text: s.res+" / "+s.category,          
-          _index: "bdrc_prod",
-          // data that seem to be neeeded for the json to be processed 
-          _id:"bdr:MW123456_"+i,
-          _score:1,
-          _source: {
-            prefLabel_bo_x_ewts: s.res,
-            search_as_you_type: s.res,
-            search_completion: [ s.res ],
-          }
-        }))
-      }] 
-    },
-  });
+    autocompletedResults: [],
+    autocompletedSuggestions: {
+      documents: json.map((s,i) => ({ 
+        highlight: s.res,
+        suggestion: s.res.replace(/<\/?suggested>/g,""),
+      }))
+    }
+  })    
 }
+
+// not sure we'll need this 
+// ==> https://docs.elastic.co/search-ui/solutions/ecommerce/autocomplete
+function AutocompleteView({
+  autocompleteResults,
+  autocompletedResults,
+  autocompleteSuggestions,
+  autocompletedSuggestions,
+  className,
+  getItemProps,
+  getMenuProps
+}) {
+  console.log("complete?",  
+    autocompleteResults,
+    autocompletedResults,
+    autocompleteSuggestions,
+    autocompletedSuggestions
+  )
+  let index = 0;
+  return (
+    <div
+      {...getMenuProps({
+        className: ["sui-search-box__autocomplete-container", className].join(
+          " "
+        )
+      })}
+    >youpi</div>
+  )
+}
+
 
 /*
 */
@@ -115,7 +134,7 @@ const config = {
       "translator.prefLabel_en": {},
       "workGenre.prefLabel_bo_x_ewts": {},
       "workGenre.prefLabel_en": {},
-      "workIsAbout": {}
+      "workIsAbout": {},
     },
     result_fields: {
       "seriesName_bo_x_ewts":{},
@@ -206,22 +225,9 @@ const config = {
     }
   },
   autocompleteQuery: {    
-    results: {    
-      search_fields: {
-        search_as_you_type: {}
-      },      
-      result_fields: {
-        prefLabel_bo_x_ewts: {
-          raw: {}
-        },
-      }  
-    },
+    resultsPerPage: 5,
     suggestions: {
-      types: {
-        documents: {
-          fields: ["search_completion"]
-        }
-      },
+      size: 4
     }
   }
 };
@@ -245,12 +251,14 @@ export default function App() {
                       autocompleteResults={{
                         linkTarget: "_blank",
                         sectionTitle: "Results",
-                        titleField: "prefLabel_bo_x_ewts",
+                        titleField: "title",
+                        urlField: "nps_link",
                         shouldTrackClickThrough: true,
                         clickThroughTags: ["test"]
                       }}
                       autocompleteSuggestions={true}
                       debounceLength={300}
+                      //autocompleteView={AutocompleteView}
                     />
                   }
                   sideContent={
