@@ -7,8 +7,14 @@
   max-width:100%;
 }
 
+.sui-search-box__autocomplete-container li:hover,
 .sui-search-box__autocomplete-container li[aria-selected=true] {
   background:#d73449;
+}
+
+
+.sui-search-box__autocomplete-container li:hover ~ .sui-search-box__autocomplete-container li[aria-selected=true] {
+  background:none;
 }
 
 not_suggested, 

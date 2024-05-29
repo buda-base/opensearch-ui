@@ -44,6 +44,14 @@ const connector = new ElasticSearchAPIConnector({
         "Authorization": "Basic cHVibGljcXVlcnk6MFZzZzFRdmpMa1RDenZ0bA=="
       }
     }
+},
+(requestBody, requestState, queryConfig) => {
+  if(requestBody.query?.bool?.should && !requestBody.query?.bool?.must) {
+    requestBody.query.bool.must = requestBody.query.bool.should.filter(q => ["phrase", "phrase_prefix"].includes(q.multi_match?.type))
+    delete requestBody.query.bool.should
+  }
+  console.log("postProcess requestBody Call", requestBody, requestState, queryConfig);
+  return requestBody;
 });
 
 connector.onAutocomplete = async (
@@ -114,27 +122,40 @@ const config = {
   searchQuery: {
     filters: [],
     search_fields: {
-      "seriesName_bo_x_ewts": {},
-      "seriesName_en": {},
+      "seriesName_bo_x_ewts": {
+        weight:2
+      },
+      "seriesName_en": {
+        weight:2
+      },
       "authorshipStatement_bo_x_ewts": {},
       "authorshipStatement_en": {},
       "publisherName_bo_x_ewts": {},
       "publisherLocation_bo_x_ewts": {},
       "publisherName_en": {},
       "publisherLocation_en": {},
-      "prefLabel_bo_x_ewts": {},
-      "prefLabel_en": {},
+      "prefLabel_bo_x_ewts": {
+        weight:5
+      },
+      "prefLabel_en": {
+        weight:5
+      },
       "comment_bo_x_ewts": {},
       "comment_en": {},
-      "altLabel_bo_x_ewts": {},
-      "altLabel_en": {},
+      "altLabel_bo_x_ewts": {
+        weight:4
+      },
+      "altLabel_en": {
+        weight:4
+      },
       "author.prefLabel_bo_x_ewts": {},
       "author.prefLabel_en": {},
       "translator.prefLabel_bo_x_ewts": {},
       "translator.prefLabel_en": {},
       "workGenre.prefLabel_bo_x_ewts": {},
       "workGenre.prefLabel_en": {},
-      "workIsAbout": {},
+      "workIsAbout.prefLabel_bo_x_ewts": {},
+      "workIsAbout.prefLabel_en": {},
     },
     result_fields: {
       "seriesName_bo_x_ewts":{},
@@ -157,7 +178,8 @@ const config = {
       "translator.prefLabel_en":{},
       "workGenre.prefLabel_bo_x_ewts":{},
       "workGenre.prefLabel_en":{},
-      "workIsAbout":{}
+      "workIsAbout.prefLabel_bo_x_ewts": {},
+      "workIsAbout.prefLabel_en": {},
     },
     disjunctiveFacets: [
       /*
